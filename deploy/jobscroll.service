@@ -1,0 +1,16 @@
+[Unit]
+Description=JobScroll server (Node + venv bootstrap)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/opt/scrolling-company
+ExecStart=/bin/bash /opt/scrolling-company/scripts/start_server_linux.sh
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=8002
+
+[Install]
+WantedBy=multi-user.target

@@ -8,16 +8,16 @@
   "auto_push_local_ahead": false,
   "stop": {
     "mode": "port",
-    "port": 3000
+    "port": 8002
   },
   "start": {
     "windows": "npm start",
-    "linux": "npm start"
+    "linux": "PORT=8002 npm start"
   },
   "setup": {
     "enabled": true,
-    "windows": "pip install -r requirements.txt && npm install",
-    "linux": "pip3 install -r requirements.txt && npm install",
+    "windows": "if not exist .venv\\Scripts\\python.exe (python -m venv .venv) && .venv\\Scripts\\python.exe -m pip install -r requirements.txt && npm install",
+    "linux": "([ -d .venv ] || python3 -m venv .venv) && . .venv/bin/activate && pip install -r requirements.txt && npm install",
     "run_when_changed": [
       "requirements.txt",
       "package.json",

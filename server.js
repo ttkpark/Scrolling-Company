@@ -5,7 +5,7 @@ const mockData = require("./mockData");
 const { crawlSaramin, crawlJobkorea } = require("./crawler");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8002;
 
 app.use(cors());
 app.use(express.json());

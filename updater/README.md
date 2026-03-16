@@ -5,10 +5,10 @@ Then run `run_once.bat` (Windows) or `run_once.sh` (Linux).
 
 ## 이 프로젝트(Scrolling_Company / JobScroll)에서
 
-- **서버**: `npm start` → Express 서버, 기본 포트 **3000**
-- **업데이트 시**: 3000 포트 프로세스 종료 → `git pull --ff-only` → 필요 시 setup 실행 → `npm start` 재실행
+- **서버**: `npm start` → Express 서버, 기본 포트 **8002**
+- **업데이트 시**: 8002 포트 프로세스 종료 → `git pull --ff-only` → 필요 시 setup 실행 → `PORT=8002 npm start` 재실행
 - **setup**: `requirements.txt` 또는 `package.json`/`package-lock.json` 변경 시에만 실행  
-  (Python: `pip install -r requirements.txt`, Node: `npm install`)
+  (Python: `.venv` 생성 후 `pip install -r requirements.txt`, Node: `npm install`)
 
 ## What it does
 
@@ -66,4 +66,20 @@ Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Ru
 ```bash
 chmod +x updater/run_once.sh
 (crontab -l 2>/dev/null; echo "*/5 * * * * /bin/bash /path/to/repo/updater/run_once.sh") | crontab -
+```
+
+## Linux service (boot auto start)
+
+This repo provides:
+
+- `scripts/start_server_linux.sh` : starts server on port 8002
+- `deploy/jobscroll.service` : systemd unit template
+
+Install example:
+
+```bash
+cd /path/to/repo
+chmod +x scripts/start_server_linux.sh
+chmod +x scripts/install_systemd_service.sh
+./scripts/install_systemd_service.sh ubuntu
 ```
