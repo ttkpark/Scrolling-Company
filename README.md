@@ -7,30 +7,66 @@ CSV/JSON 데이터셋과 Markdown 리포트를 생성합니다.
 
 ## 설치
 
-**한 번에 설치** (Python + Playwright + Node 의존성 + 데이터 폴더):
+**한 번에 설치** (`.venv` + Python + Playwright + Node 의존성 + 데이터 폴더):
 
 - **Windows**: `install.bat` 더블클릭 또는 `.\install.bat`
 - **Linux/macOS**: `chmod +x install.sh && ./install.sh`
 
-(사전 요구: [Python](https://www.python.org/downloads/), [Node.js](https://nodejs.org/) LTS 설치)
+(사전 요구: [Python](https://www.python.org/downloads/), [Node.js](https://nodejs.org/) **24.x** 설치 권장)
+
+#### Linux(Ubuntu)에서 Node 24.x 설치 예시
+
+```bash
+sudo apt update
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
+sudo apt install -y nodejs
+node -v   # v24.x.x
+npm -v    # 11.x
+```
 
 ---
 
 ### 수동 설치
 
-#### 1. Python 패키지 설치
+#### 0. 저장소 불러오기
 
 ```powershell
+# Linux/macOS
+rm -rf Scrolling-Company
+
+# Common
+git clone https://github.com/ttkpark/Scrolling-Company
+cd Scrolling-Company
+git checkout origin/dev
+git pull  origin dev
+```
+
+#### 1. 가상환경 생성 및 활성화
+
+```powershell
+# Windows
+python -m venv .venv
+.\.venv\Scripts\activate
+
+# Linux/macOS
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+#### 2. Python 패키지 설치
+
+```powershell
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-#### 2. Playwright 브라우저 설치
+#### 3. Playwright 브라우저 설치
 
 ```powershell
 python -m playwright install
 ```
 
-#### 3. Node 패키지 (웹 서버용)
+#### 4. Node 패키지 (웹 서버용)
 
 ```powershell
 npm install
@@ -38,7 +74,41 @@ npm install
 
 ---
 
+## 웹 서버 실행 (포트 8002)
+
+기본 포트는 `8002`입니다.
+
+```powershell
+npm start
+```
+
+- 접속: `http://localhost:8002`
+- 상태 확인: `http://localhost:8002/api/crawl/status`
+
+---
+
+## Linux 부팅 시 자동 실행 (systemd)
+
+리눅스 서버에서 부팅 후 자동으로 웹 서버(8002)를 올리려면:
+
+```bash
+chmod +x scripts/setup_venv_linux.sh scripts/start_server_linux.sh scripts/install_systemd_service.sh
+./scripts/install_systemd_service.sh ubuntu
+```
+
+- `ubuntu` 부분은 실제 실행 계정으로 바꿔주세요.
+- 위 스크립트는 `deploy/jobscroll.service`를 기반으로 경로/사용자를 현재 프로젝트에 맞춰 설치합니다.
+
+```bash
+sudo systemctl status jobscroll.service
+sudo journalctl -u jobscroll.service -f
+```
+
+---
+
 ## 실행
+
+> 아래 명령은 `venv` 활성화 상태에서 실행하는 것을 권장합니다.
 
 ### 전체 사이트 수집
 

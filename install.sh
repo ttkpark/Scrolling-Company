@@ -48,11 +48,13 @@ else
   echo "[경고] Playwright 브라우저 설치 실패. job_explorer 크롤링은 동작하지 않을 수 있습니다."
 fi
 
-# Node 확인
+# Node 확인 (Node 24.x 권장)
 if ! command -v node &>/dev/null; then
   echo ""
   echo "[오류] Node.js가 설치되어 있지 않습니다."
-  echo "       (Ubuntu/Debian: curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - && sudo apt install -y nodejs)"
+  echo "       (Ubuntu/Debian, Node 24.x 예시):"
+  echo "         curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -"
+  echo "         sudo apt install -y nodejs"
   exit 1
 fi
 echo ""
