@@ -1,0 +1,20 @@
+{
+  "name": "scrolling-company",
+  "version": "1.0.0",
+  "description": "SNS 스타일 한국 구직 플랫폼 프로토타입 - JobScroll",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "puppeteer": "^24.39.1"
+  }
+}

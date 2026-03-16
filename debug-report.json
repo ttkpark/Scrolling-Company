@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-03-14T16:12:01.096Z",
+  "pageAnalysis": {
+    "bodyText": "⚡\nJobScroll\n전체\nIT/개발\n데이터·AI\n디자인\n기획·PM\n✕\n1 / 1\nK\n카카오\n카카오 채용\n프론트엔드 개발자\n\n플랫폼개발팀\n\n판교\n5,000 ~ 8,000만원\n경력 3년 이상\nReact\nTypeScript\nNext.js\nGraphQL\n\n주요 업무\n\n카카오 핵심 서비스 프론트엔드 개발\n사용자 경험 개선 및 성능 최적화\n디자인 시스템 구축 및 운영\n✓ 유연근무\n✓ 재택근무\n✓ 스톡옵션\n✓ 사내 카페\n마감 2026-04-15\n지원하기 →\n🤍\n234\n📌\n저장\n↗️\n공유\n다음 공고\n2 / 2\nN\n네이버\n네이버 채용\n백엔드 개발자 (Java)\n\n검색플랫폼개발\n\n분당\n4,800 ~ 7,500만원\n경력 2년 이상\nJava\nSpring Boot\nKafka\nMySQL\n\n주요 업무\n\n네이버 검색 플랫폼 백엔드 개발\n대용량 트래픽 처리 시스템 설계\nMSA 기반 서비스 개발 및 운영\n✓ 유연근무\n✓ 건강검진 지원\n✓ 자기개발비\n✓ 사내 복지몰\n마감 2026-04-30\n지원하기 →\n🤍\n1",
+    "hasContent": true,
+    "feedExists": true,
+    "cardCount": 5,
+    "skeletonVisible": false,
+    "hasErrors": false,
+    "title": "JobScroll — 스크롤로 찾는 내 다음 직장",
+    "visibleText": [
+      "프론트엔드 개발자",
+      "백엔드 개발자 (Java)",
+      "iOS 개발자",
+      "AI 연구원",
+      "데이터 엔지니어"
+    ]
+  },
+  "errors": [
+    "네트워크 실패: https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap - net::ERR_BLOCKED_BY_ORB",
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "consoleMessages": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ]
+}
