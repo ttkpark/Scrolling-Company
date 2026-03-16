@@ -1,0 +1,25 @@
+{
+  "name": "JobScroll — 스크롤로 찾는 내 다음 직장",
+  "short_name": "JobScroll",
+  "description": "틱톡처럼 스크롤하며 채용 공고를 탐색하는 앱",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#6c63ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%236c63ff'/><text x='50%' y='58%' font-size='120' text-anchor='middle' dominant-baseline='middle'>⚡</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%236c63ff'/><text x='50%' y='58%' font-size='320' text-anchor='middle' dominant-baseline='middle'>⚡</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["productivity", "business"],
+  "screenshots": [],
+  "lang": "ko"
+}

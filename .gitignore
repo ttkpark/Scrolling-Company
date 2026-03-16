@@ -1,0 +1,42 @@
+# Python
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Node
+node_modules/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# 프로젝트 데이터/로그 (선택: 커밋하려면 제거)
+data/raw/
+data/processed/
+reports/
+*.log
+updater/updater.log
+updater/updater.lock
+
+# Playwright
+playwright-report/
+test-results/
+.playwright/
+
+# 기타
+*.env
+.env.local
+*.local

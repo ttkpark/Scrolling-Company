@@ -1,0 +1,93 @@
+# 수집 대상 사이트 설정
+# scroll_type: infinite | load_more | pagination
+# load_more_selector: "더보기" 버튼 CSS 선택자 (load_more 타입에서 사용)
+
+defaults:
+  viewport_width: 1280
+  viewport_height: 900
+  headless: true
+  timeout_ms: 30000
+  scroll_pause_ms: 2000
+  scroll_stabilize_count: 3   # 높이 변화 없을 때 종료 기준 반복 횟수
+  request_delay_min: 1.5      # 요청 최소 대기 (초)
+  request_delay_max: 4.0      # 요청 최대 대기 (초)
+  max_retries: 3
+  concurrency: 1
+
+sites:
+  - key: hanwha
+    name: 한화인
+    enabled: true
+    # 한화인 직무 목록 페이지 (계열사 파라미터 없이 전체 목록)
+    list_url: "https://www.hanwhain.com/hanwha/think/think_introduce.do"
+    scroll_type: pagination
+    # 직무 상세 링크 패턴
+    detail_url_pattern: "https://www.hanwhain.com{path}"
+    # CSS 선택자
+    selectors:
+      job_items: ".job-list .job-item, .depth2_list li, .career_list li, li.job_item"
+      job_link: "a"
+      # 상세 페이지
+      detail_job_name: "h2.job_name, h1.tit, .job_tit, h2.tit"
+      detail_department: ".dept_name, .group_name"
+      detail_company: ".company_name, .corp_name"
+      detail_description: ".job_desc, .desc_txt, .job_intro"
+      detail_responsibilities: ".work_list li, .duty_list li"
+      detail_required_skills: ".require_list li, .skill_list li"
+      detail_preferred_skills: ".prefer_list li"
+      detail_career_path: ".career_path"
+    robots_allowed: true
+
+  - key: jobkorea
+    name: 잡코리아
+    enabled: true
+    list_url: "https://www.jobkorea.co.kr/recruit/ai-jobs"
+    scroll_type: infinite
+    selectors:
+      job_items: ".recruit-info-wrap, .list-default li, .card-item"
+      job_link: "a.title, a.go-detail"
+      detail_job_name: "h1.title, .tit_job, h2.job_tit"
+      detail_department: ".job_category"
+      detail_company: ".corp_name, h2.coName"
+      detail_description: ".jd-detail, .job_detail_cont"
+      detail_responsibilities: ".duty_wrap li, .jd-work li"
+      detail_required_skills: ".skill_list li, .require_wrap li"
+      detail_preferred_skills: ".prefer_wrap li"
+      detail_career_path: ""
+    robots_allowed: true
+
+  - key: saramin
+    name: 사람인
+    enabled: true
+    list_url: "https://www.saramin.co.kr/zf_user/jobs/list/domestic"
+    scroll_type: pagination
+    selectors:
+      job_items: ".item_recruit"
+      job_link: "h2.job_tit a, .job_tit a"
+      detail_job_name: "h1.tit_job, .tit_job"
+      detail_department: ".job_category span"
+      detail_company: ".corp_name, h2.corp_name"
+      detail_description: ".jd-contents .wrap, .job_detail"
+      detail_responsibilities: ".jd-contents .wrap li"
+      detail_required_skills: ".job_sector span"
+      detail_preferred_skills: ""
+      detail_career_path: ""
+    robots_allowed: true
+
+  - key: wanted
+    name: 원티드
+    enabled: true
+    list_url: "https://www.wanted.co.kr/wdlist"
+    scroll_type: infinite
+    selectors:
+      job_items: "li.JobCard_container__REty1, .job-card, li[class*=JobCard]"
+      job_link: "a"
+      detail_job_name: "h2[class*=JobHeader], .job-title, h1"
+      detail_department: "span[class*=JobHeader_tagList] span"
+      detail_company: "a[class*=CompanyLink], .company-name"
+      detail_description: "section[class*=JobDescription] .body, .jd-body"
+      detail_responsibilities: ""
+      detail_required_skills: ""
+      detail_preferred_skills: ""
+      detail_career_path: ""
+    robots_allowed: true

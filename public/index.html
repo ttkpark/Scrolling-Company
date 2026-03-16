@@ -3,115 +3,341 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a0a0f" id="themeColorMeta" />
     <title>JobScroll — 스크롤로 찾는 내 다음 직장</title>
+    <link rel="manifest" href="manifest.json" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
     <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" as="style" crossorigin
-      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
+    <link
+      rel="preload"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css"
+      onload="this.rel='stylesheet'"
     />
+    <noscript>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" />
+    </noscript>
   </head>
   <body>
+    <!-- 스크린 리더용 스킵 링크 -->
+    <a href="#feed" class="skip-link">본문으로 바로가기</a>
 
-    <!-- ─── 상단 바 ─── -->
-    <header class="top-bar" id="topBar">
-      <div class="logo">
-        <span class="logo__icon">⚡</span>
-        <span class="logo__text">JobScroll</span>
+    <!-- ═══════════════════════════════════════
+         온보딩 오버레이
+    ═══════════════════════════════════════ -->
+    <div class="onboarding-overlay" id="onboardingOverlay" role="dialog" aria-modal="true" aria-label="JobScroll 시작하기">
+      <div class="onboarding-box">
+        <div class="onboarding-steps" id="onboardingSteps">
+
+          <!-- Step 1 -->
+          <div class="onboard-step active" data-step="1">
+            <div class="onboard-icon" aria-hidden="true">⚡</div>
+            <h2 class="onboard-title">JobScroll에 오신 걸 환영해요!</h2>
+            <p class="onboard-desc">틱톡처럼 스크롤하며 채용 공고를 탐색하세요.<br/>관심 공고를 저장하고, 빠르게 지원해 보세요.</p>
+            <button class="onboard-next-btn" onclick="nextOnboardStep()">시작하기 →</button>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="onboard-step" data-step="2">
+            <div class="onboard-icon" aria-hidden="true">🎯</div>
+            <h2 class="onboard-title">관심 직군을 선택해 주세요</h2>
+            <p class="onboard-desc">선택한 직군의 공고를 우선적으로 보여드려요.<br/>(복수 선택 가능)</p>
+            <div class="onboard-job-grid" id="onboardJobGrid">
+              <button class="onboard-job-btn" data-value="IT/개발">💻 IT/개발</button>
+              <button class="onboard-job-btn" data-value="데이터/AI">🤖 데이터·AI</button>
+              <button class="onboard-job-btn" data-value="디자인">🎨 디자인</button>
+              <button class="onboard-job-btn" data-value="기획/PM">📋 기획·PM</button>
+              <button class="onboard-job-btn" data-value="마케팅">📣 마케팅</button>
+              <button class="onboard-job-btn" data-value="영업">🤝 영업</button>
+              <button class="onboard-job-btn" data-value="재무/회계">💰 재무·회계</button>
+              <button class="onboard-job-btn" data-value="HR">👥 HR</button>
+              <button class="onboard-job-btn" data-value="교육">📚 교육</button>
+              <button class="onboard-job-btn" data-value="운영/물류">📦 운영·물류</button>
+              <button class="onboard-job-btn" data-value="의료/바이오">🏥 의료·바이오</button>
+            </div>
+            <button class="onboard-next-btn" onclick="nextOnboardStep()">다음 →</button>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="onboard-step" data-step="3">
+            <div class="onboard-icon" aria-hidden="true">📍</div>
+            <h2 class="onboard-title">선호하는 근무 지역은?</h2>
+            <p class="onboard-desc">해당 지역 공고를 먼저 보여드릴게요.</p>
+            <div class="onboard-location-grid" id="onboardLocationGrid">
+              <button class="onboard-loc-btn" data-value="서울">서울</button>
+              <button class="onboard-loc-btn" data-value="경기">경기</button>
+              <button class="onboard-loc-btn" data-value="인천">인천</button>
+              <button class="onboard-loc-btn" data-value="부산">부산</button>
+              <button class="onboard-loc-btn" data-value="대구">대구</button>
+              <button class="onboard-loc-btn" data-value="대전">대전</button>
+              <button class="onboard-loc-btn" data-value="원격">원격 가능</button>
+              <button class="onboard-loc-btn" data-value="">상관없음</button>
+            </div>
+            <button class="onboard-next-btn" onclick="nextOnboardStep()">다음 →</button>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="onboard-step" data-step="4">
+            <div class="onboard-icon" aria-hidden="true">🎓</div>
+            <h2 class="onboard-title">경력 단계를 알려주세요</h2>
+            <div class="onboard-exp-grid">
+              <button class="onboard-exp-btn" data-value="신입" onclick="selectExpLevel(this)">🌱 신입/인턴</button>
+              <button class="onboard-exp-btn" data-value="경력" onclick="selectExpLevel(this)">💼 경력직</button>
+              <button class="onboard-exp-btn" data-value="" onclick="selectExpLevel(this)">🔍 모두 보기</button>
+            </div>
+            <button class="onboard-next-btn" onclick="finishOnboarding()">JobScroll 시작! 🚀</button>
+          </div>
+
+        </div>
+
+        <!-- 진행 도트 -->
+        <div class="onboard-dots" aria-label="단계 표시">
+          <span class="onboard-dot active" data-for="1"></span>
+          <span class="onboard-dot" data-for="2"></span>
+          <span class="onboard-dot" data-for="3"></span>
+          <span class="onboard-dot" data-for="4"></span>
+        </div>
+
+        <button class="onboard-skip" onclick="finishOnboarding()" aria-label="온보딩 건너뛰기">건너뛰기</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         상단 헤더
+    ═══════════════════════════════════════ -->
+    <header class="top-bar" id="topBar" role="banner">
+      <div class="top-bar__left">
+        <div class="logo" aria-label="JobScroll 홈">
+          <span class="logo__icon" aria-hidden="true">⚡</span>
+          <span class="logo__text">JobScroll</span>
+        </div>
       </div>
 
-      <div class="job-counter" id="jobCounter">— / —</div>
+      <nav class="category-nav" id="categoryNav" aria-label="직군 카테고리">
+        <button class="cat-btn active" data-category="전체" aria-pressed="true">전체</button>
+        <button class="cat-btn" data-category="IT/개발" aria-pressed="false">IT/개발</button>
+        <button class="cat-btn" data-category="데이터/AI" aria-pressed="false">데이터·AI</button>
+        <button class="cat-btn" data-category="디자인" aria-pressed="false">디자인</button>
+        <button class="cat-btn" data-category="기획/PM" aria-pressed="false">기획·PM</button>
+        <button class="cat-btn" data-category="마케팅" aria-pressed="false">마케팅</button>
+        <button class="cat-btn" data-category="영업" aria-pressed="false">영업</button>
+        <button class="cat-btn" data-category="재무/회계" aria-pressed="false">재무·회계</button>
+        <button class="cat-btn" data-category="HR" aria-pressed="false">HR</button>
+        <button class="cat-btn" data-category="교육" aria-pressed="false">교육</button>
+        <button class="cat-btn" data-category="운영/물류" aria-pressed="false">운영·물류</button>
+        <button class="cat-btn" data-category="의료/바이오" aria-pressed="false">의료·바이오</button>
+      </nav>
 
-      <div class="top-bar-actions">
-        <button class="icon-btn" id="filterBtn" title="필터·검색">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="4" y1="6" x2="20" y2="6"/>
-            <line x1="8" y1="12" x2="16" y2="12"/>
-            <line x1="11" y1="18" x2="13" y2="18"/>
+      <div class="top-bar__right" role="toolbar" aria-label="도구 모음">
+        <!-- 검색 -->
+        <button class="icon-btn" id="searchToggleBtn" title="검색" aria-label="검색" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
         </button>
-        <button class="icon-btn crawl-btn" id="crawlBtn" title="실시간 크롤링">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="23 4 23 10 17 10"/>
-            <polyline points="1 20 1 14 7 14"/>
+        <!-- 필터 -->
+        <button class="icon-btn filter-btn" id="filterBtn" title="필터" aria-label="필터 열기" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+          </svg>
+          <span class="filter-badge" id="filterBadge" style="display:none" aria-label="활성 필터 수"></span>
+        </button>
+        <!-- 보기 전환 -->
+        <button class="icon-btn" id="viewToggleBtn" title="리스트/카드 보기 전환" aria-label="보기 전환" aria-pressed="false">
+          <svg id="viewToggleIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+          </svg>
+        </button>
+        <!-- 크롤링 -->
+        <button class="icon-btn crawl-btn" id="crawlBtn" title="실시간 데이터 새로고침" aria-label="실시간 공고 수집">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
             <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+        </button>
+        <!-- 라이트/다크 모드 -->
+        <button class="icon-btn" id="themeBtn" title="테마 전환" aria-label="라이트/다크 모드 전환">
+          <svg id="themeBtnIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
           </svg>
         </button>
       </div>
     </header>
 
-    <!-- ─── Stories 뷰포트 ─── -->
-    <div class="stories-vp" id="storiesVp">
-
-      <!-- 배경 그라디언트 (job 별 색상) -->
-      <div class="story-bg" id="storyBg"></div>
-      <div class="story-overlay"></div>
-
-      <!-- 상단: 슬라이드 진행 표시바 -->
-      <div class="story-progress" id="storyProgress"></div>
-
-      <!-- 회사 정보 헤더 -->
-      <div class="story-header" id="storyHeader">
-        <div class="story-logo" id="storyLogo"></div>
-        <div class="story-header-info">
-          <div class="story-company-name" id="storyCompanyName"></div>
-          <div class="story-company-sub" id="storyCompanySub"></div>
-        </div>
-        <div class="story-category-badge" id="storyCategoryBadge"></div>
-      </div>
-
-      <!-- 슬라이드 콘텐츠 영역 -->
-      <div class="story-content-wrap" id="storyContentWrap">
-        <div class="story-content" id="storyContent"></div>
-      </div>
-
-      <!-- 우측 액션 버튼 모음 -->
-      <div class="story-actions" id="storyActions">
-        <button class="sa-btn" id="likeBtn">
-          <div class="sa-icon" id="likeIcon">🤍</div>
-          <span class="sa-count" id="likeCount">0</span>
-        </button>
-        <button class="sa-btn" id="saveBtn">
-          <div class="sa-icon" id="saveIcon">📌</div>
-          <span class="sa-label" id="saveLabel">저장</span>
-        </button>
-        <button class="sa-btn" id="shareBtn">
-          <div class="sa-icon">↗️</div>
-          <span class="sa-label">공유</span>
-        </button>
-      </div>
-
-      <!-- 투명 탭 존 (좌 40% / 우 60%) — z-index 아래에 있으므로 버튼은 정상 클릭 가능 -->
-      <div class="tap-zone tap-left" id="tapLeft"></div>
-      <div class="tap-zone tap-right" id="tapRight"></div>
-
-      <!-- 스와이프 방향 힌트 플래시 -->
-      <div class="swipe-flash" id="swipeFlash"></div>
-
-      <!-- 로딩 / 끝 상태 오버레이 -->
-      <div class="story-state-overlay" id="storyStateOverlay" style="display:none">
-        <div class="state-box" id="stateBox"></div>
+    <!-- ═══════════════════════════════════════
+         검색바
+    ═══════════════════════════════════════ -->
+    <div class="search-bar" id="searchBar" role="search">
+      <div class="search-bar__inner">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="search"
+          id="searchInput"
+          class="search-input"
+          placeholder="회사명, 직무, 스킬, 지역으로 검색..."
+          autocomplete="off"
+          aria-label="채용공고 검색"
+        />
+        <button class="search-clear" id="searchClear" aria-label="검색어 지우기">✕</button>
       </div>
     </div>
 
-    <!-- ─── 하단 내비게이션 ─── -->
-    <nav class="bottom-nav">
-      <button class="bnav-btn active" data-tab="feed">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-          <rect x="3" y="3" width="7" height="7" rx="1"/>
-          <rect x="14" y="3" width="7" height="7" rx="1"/>
-          <rect x="3" y="14" width="7" height="7" rx="1"/>
-          <rect x="14" y="14" width="7" height="7" rx="1"/>
+    <!-- ═══════════════════════════════════════
+         필터 패널
+    ═══════════════════════════════════════ -->
+    <div class="filter-panel" id="filterPanel" role="dialog" aria-modal="false" aria-label="필터 설정">
+      <div class="filter-panel__header">
+        <h3 class="filter-panel__title">필터 &amp; 정렬</h3>
+        <button class="filter-reset" id="filterReset" aria-label="필터 초기화">초기화</button>
+        <button class="icon-btn filter-close" id="filterClose" aria-label="필터 닫기">✕</button>
+      </div>
+      <div class="filter-panel__body">
+
+        <!-- 정렬 -->
+        <div class="filter-group">
+          <p class="filter-label">정렬</p>
+          <div class="filter-chips" role="group" aria-label="정렬 기준">
+            <button class="filter-chip active" data-filter="sortBy" data-value="" aria-pressed="true">기본순</button>
+            <button class="filter-chip" data-filter="sortBy" data-value="dDay" aria-pressed="false">마감임박순</button>
+            <button class="filter-chip" data-filter="sortBy" data-value="salary" aria-pressed="false">연봉높은순</button>
+            <button class="filter-chip" data-filter="sortBy" data-value="popular" aria-pressed="false">인기순</button>
+          </div>
+        </div>
+
+        <!-- 경력 수준 -->
+        <div class="filter-group">
+          <p class="filter-label">경력</p>
+          <div class="filter-chips" role="group" aria-label="경력 수준">
+            <button class="filter-chip active" data-filter="experienceLevel" data-value="" aria-pressed="true">전체</button>
+            <button class="filter-chip" data-filter="experienceLevel" data-value="신입" aria-pressed="false">🌱 신입/인턴</button>
+            <button class="filter-chip" data-filter="experienceLevel" data-value="경력" aria-pressed="false">💼 경력직</button>
+          </div>
+        </div>
+
+        <!-- 고용 형태 -->
+        <div class="filter-group">
+          <p class="filter-label">고용 형태</p>
+          <div class="filter-chips" role="group" aria-label="고용 형태">
+            <button class="filter-chip active" data-filter="employmentType" data-value="" aria-pressed="true">전체</button>
+            <button class="filter-chip" data-filter="employmentType" data-value="정규직" aria-pressed="false">정규직</button>
+            <button class="filter-chip" data-filter="employmentType" data-value="인턴" aria-pressed="false">인턴</button>
+            <button class="filter-chip" data-filter="employmentType" data-value="신입" aria-pressed="false">신입</button>
+            <button class="filter-chip" data-filter="employmentType" data-value="계약직" aria-pressed="false">계약직</button>
+          </div>
+        </div>
+
+        <!-- 지역 -->
+        <div class="filter-group">
+          <p class="filter-label">지역</p>
+          <div class="filter-chips" role="group" aria-label="근무 지역">
+            <button class="filter-chip active" data-filter="location" data-value="" aria-pressed="true">전체</button>
+            <button class="filter-chip" data-filter="location" data-value="서울" aria-pressed="false">서울</button>
+            <button class="filter-chip" data-filter="location" data-value="경기" aria-pressed="false">경기</button>
+            <button class="filter-chip" data-filter="location" data-value="인천" aria-pressed="false">인천</button>
+            <button class="filter-chip" data-filter="location" data-value="부산" aria-pressed="false">부산</button>
+            <button class="filter-chip" data-filter="location" data-value="원격" aria-pressed="false">원격</button>
+          </div>
+        </div>
+
+        <!-- 최소 연봉 -->
+        <div class="filter-group">
+          <p class="filter-label">최소 연봉</p>
+          <div class="salary-range">
+            <input
+              type="range"
+              id="salaryRange"
+              min="0"
+              max="8000"
+              step="500"
+              value="0"
+              class="salary-slider"
+              aria-label="최소 연봉 설정"
+            />
+            <div class="salary-labels">
+              <span>제한 없음</span>
+              <span id="salaryRangeLabel" class="salary-value">제한 없음</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="filter-apply-btn" id="filterApply">공고 보기</button>
+    </div>
+    <div class="filter-backdrop" id="filterBackdrop"></div>
+
+    <!-- ═══════════════════════════════════════
+         메인 피드
+    ═══════════════════════════════════════ -->
+    <main class="feed" id="feed" role="main" aria-label="채용 공고 피드">
+      <div class="skeleton-card" id="skeletonCard" aria-label="로딩 중" aria-busy="true">
+        <div class="skeleton-content">
+          <div class="skeleton-line skeleton-company"></div>
+          <div class="skeleton-line skeleton-title"></div>
+          <div class="skeleton-line skeleton-title short"></div>
+          <div class="skeleton-tags">
+            <div class="skeleton-tag"></div>
+            <div class="skeleton-tag"></div>
+            <div class="skeleton-tag"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ═══════════════════════════════════════
+         상세 페이지 모달
+    ═══════════════════════════════════════ -->
+    <div class="detail-modal" id="detailModal" role="dialog" aria-modal="true" aria-label="채용공고 상세">
+      <div class="detail-sheet" id="detailSheet">
+        <div class="detail-handle" aria-hidden="true"></div>
+        <button class="detail-close" id="detailClose" aria-label="상세 닫기">✕</button>
+        <div class="detail-content" id="detailContent" tabindex="-1"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         하단 내비게이션
+    ═══════════════════════════════════════ -->
+    <nav class="bottom-nav" role="navigation" aria-label="주요 메뉴">
+      <button class="bottom-nav__btn active" data-tab="feed" aria-label="탐색" aria-pressed="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
         </svg>
         <span>탐색</span>
       </button>
-      <button class="bnav-btn" data-tab="saved">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="bottom-nav__btn" data-tab="history" aria-label="최근 본 공고" aria-pressed="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>최근</span>
+      </button>
+      <button class="bottom-nav__btn" data-tab="saved" aria-label="저장한 공고" aria-pressed="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
         </svg>
         <span>저장</span>
+        <span class="nav-badge" id="savedBadge" style="display:none"></span>
       </button>
-      <button class="bnav-btn" data-tab="profile">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="bottom-nav__btn" data-tab="applied" aria-label="지원 이력" aria-pressed="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <span>지원</span>
+        <span class="nav-badge" id="appliedBadge" style="display:none"></span>
+      </button>
+      <button class="bottom-nav__btn" data-tab="profile" aria-label="내 정보" aria-pressed="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
           <circle cx="12" cy="7" r="4"/>
         </svg>
@@ -119,102 +345,111 @@
       </button>
     </nav>
 
-    <!-- ─── 저장 패널 ─── -->
-    <div class="side-panel" id="savedPanel">
+    <!-- ═══════════════════════════════════════
+         최근 본 공고 탭
+    ═══════════════════════════════════════ -->
+    <div class="tab-panel" id="historyPanel" role="region" aria-label="최근 본 공고">
+      <div class="panel-header">
+        <h2>최근 본 공고</h2>
+      </div>
+      <div class="saved-list" id="historyList">
+        <div class="empty-state">
+          <div class="empty-icon" aria-hidden="true">🕐</div>
+          <p>아직 본 공고가 없어요.<br/>피드를 스크롤하면 여기에 기록돼요.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         저장 탭 패널
+    ═══════════════════════════════════════ -->
+    <div class="tab-panel" id="savedPanel" role="region" aria-label="저장한 공고">
       <div class="panel-header">
         <h2>저장한 공고</h2>
-        <span class="saved-count-badge" id="savedCountBadge">0</span>
+        <span class="saved-count-badge" id="savedCountBadge" aria-live="polite">0</span>
       </div>
       <div class="saved-list" id="savedList">
         <div class="empty-state">
-          <div class="empty-icon">🔖</div>
+          <div class="empty-icon" aria-hidden="true">🔖</div>
           <p>저장한 공고가 없어요.<br/>마음에 드는 공고를 저장해 보세요!</p>
         </div>
       </div>
     </div>
 
-    <!-- ─── 프로필 패널 ─── -->
-    <div class="side-panel" id="profilePanel">
-      <div class="panel-header"><h2>내 정보</h2></div>
+    <!-- ═══════════════════════════════════════
+         지원 이력 탭
+    ═══════════════════════════════════════ -->
+    <div class="tab-panel" id="appliedPanel" role="region" aria-label="지원 이력">
+      <div class="panel-header">
+        <h2>지원 이력</h2>
+        <span class="saved-count-badge" id="appliedCountBadge" aria-live="polite">0</span>
+      </div>
+      <div class="saved-list" id="appliedList">
+        <div class="empty-state">
+          <div class="empty-icon" aria-hidden="true">📋</div>
+          <p>아직 지원한 공고가 없어요.<br/>공고 상세에서 지원하기를 눌러보세요!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         프로필 탭 패널
+    ═══════════════════════════════════════ -->
+    <div class="tab-panel" id="profilePanel" role="region" aria-label="내 정보">
+      <div class="panel-header">
+        <h2>내 정보</h2>
+        <button class="icon-btn" id="editProfileBtn" aria-label="프로필 수정">✏️</button>
+      </div>
       <div class="profile-content">
-        <div class="profile-avatar">👤</div>
-        <p class="profile-name">구직자님 환영해요!</p>
+        <div class="profile-avatar" aria-hidden="true">👤</div>
+        <p class="profile-name" id="profileName">구직자님 환영해요!</p>
         <p class="profile-sub">JobScroll로 다음 커리어를 찾아보세요</p>
-        <div class="profile-stats">
-          <div class="stat-item">
+
+        <div class="profile-interests" id="profileInterests"></div>
+
+        <div class="profile-stats" role="list">
+          <div class="stat-item" role="listitem">
             <span class="stat-num" id="statViewed">0</span>
             <span class="stat-label">본 공고</span>
           </div>
-          <div class="stat-item">
+          <div class="stat-item" role="listitem">
             <span class="stat-num" id="statLiked">0</span>
             <span class="stat-label">좋아요</span>
           </div>
-          <div class="stat-item">
+          <div class="stat-item" role="listitem">
             <span class="stat-num" id="statSaved">0</span>
             <span class="stat-label">저장</span>
           </div>
+          <div class="stat-item" role="listitem">
+            <span class="stat-num" id="statApplied">0</span>
+            <span class="stat-label">지원</span>
+          </div>
         </div>
-        <div class="interaction-guide">
-          <p class="guide-title">조작 방법</p>
-          <div class="guide-item">
-            <span class="guide-icon">👆</span>
-            <span>우측 탭 → 다음 세부 슬라이드</span>
-          </div>
-          <div class="guide-item">
-            <span class="guide-icon">👆</span>
-            <span>좌측 탭 → 이전 슬라이드</span>
-          </div>
-          <div class="guide-item">
-            <span class="guide-icon">👉</span>
-            <span>우 스와이프 → 공고 묶음 건너뛰기</span>
-          </div>
-          <div class="guide-item">
-            <span class="guide-icon">👈</span>
-            <span>좌 스와이프 → 이전 공고 묶음</span>
-          </div>
+
+        <!-- 마감 임박 알림 섹션 -->
+        <div class="deadline-alert-section" id="deadlineAlertSection" style="display:none">
+          <h3 class="deadline-alert-title">⏰ 마감 임박 저장 공고</h3>
+          <div id="deadlineAlertList"></div>
+        </div>
+
+        <div class="profile-actions">
+          <button class="profile-action-btn" onclick="resetAllData()">데이터 초기화</button>
+          <button class="profile-action-btn primary" onclick="exportData()">내 활동 내보내기</button>
         </div>
       </div>
     </div>
 
-    <!-- ─── 필터 패널 (바텀 시트) ─── -->
-    <div class="filter-overlay" id="filterOverlay">
-      <div class="filter-sheet" id="filterSheet">
-        <div class="filter-handle"></div>
-        <div class="filter-header">
-          <span class="filter-title">필터 · 검색</span>
-          <button class="icon-btn" id="filterClose">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
-        </div>
-        <div class="filter-section">
-          <p class="filter-section-label">카테고리</p>
-          <div class="filter-cats" id="filterCats">
-            <button class="fcat-btn active" data-category="전체">전체</button>
-            <button class="fcat-btn" data-category="IT/개발">IT / 개발</button>
-            <button class="fcat-btn" data-category="데이터/AI">데이터 · AI</button>
-            <button class="fcat-btn" data-category="디자인">디자인</button>
-            <button class="fcat-btn" data-category="기획/PM">기획 · PM</button>
-          </div>
-        </div>
-        <div class="filter-section">
-          <p class="filter-section-label">키워드 검색</p>
-          <div class="filter-search-row">
-            <input type="text" id="filterKeyword" class="filter-input" placeholder="회사명, 직무, 스킬..." />
-          </div>
-        </div>
-        <button class="filter-apply-btn" id="filterApply">적용하기</button>
-      </div>
-    </div>
+    <!-- ═══════════════════════════════════════
+         토스트
+    ═══════════════════════════════════════ -->
+    <div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
 
-    <!-- ─── 토스트 ─── -->
-    <div class="toast" id="toast"></div>
-
-    <!-- ─── 크롤링 오버레이 ─── -->
-    <div class="crawl-overlay" id="crawlOverlay">
+    <!-- ═══════════════════════════════════════
+         크롤링 오버레이
+    ═══════════════════════════════════════ -->
+    <div class="crawl-overlay" id="crawlOverlay" role="status" aria-live="polite">
       <div class="crawl-box">
-        <div class="crawl-spinner"></div>
+        <div class="crawl-spinner" aria-hidden="true"></div>
         <p class="crawl-text">실시간 채용공고 수집 중...</p>
         <p class="crawl-sub">사람인 · 잡코리아에서 데이터를 가져오고 있어요</p>
       </div>

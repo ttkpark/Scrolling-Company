@@ -1,0 +1,27 @@
+{
+  "repo_path": "..",
+  "branch": "main",
+  "remote": "origin",
+  "log_file": "updater/updater.log",
+  "lock_file": "updater/updater.lock",
+  "skip_if_dirty": true,
+  "auto_push_local_ahead": false,
+  "stop": {
+    "mode": "port",
+    "port": 3000
+  },
+  "start": {
+    "windows": "npm start",
+    "linux": "npm start"
+  },
+  "setup": {
+    "enabled": true,
+    "windows": "pip install -r requirements.txt && npm install",
+    "linux": "pip3 install -r requirements.txt && npm install",
+    "run_when_changed": [
+      "requirements.txt",
+      "package.json",
+      "package-lock.json"
+    ]
+  }
+}
