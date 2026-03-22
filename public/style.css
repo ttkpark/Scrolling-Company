@@ -1200,6 +1200,182 @@ body {
 }
 
 /* ═══════════════════════════════════════
+   AI 사용량 & 요금 패널
+═══════════════════════════════════════ */
+.ai-usage-content {
+  padding: 20px 16px; overflow-y: auto; flex: 1;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.ai-section-title {
+  font-size: 15px; font-weight: 700; color: var(--text);
+  margin-bottom: 12px;
+}
+
+/* 요금제 카드 */
+.ai-plan-card {
+  background: linear-gradient(135deg, #6c63ff 0%, #4834d4 100%);
+  border-radius: 16px; padding: 24px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.ai-plan-card::after {
+  content: ''; position: absolute; top: -30px; right: -30px;
+  width: 100px; height: 100px; border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+}
+.ai-plan-badge {
+  display: inline-block; background: rgba(255,255,255,0.2);
+  color: #fff; font-size: 11px; font-weight: 700;
+  padding: 3px 12px; border-radius: 20px; margin-bottom: 8px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.ai-plan-name { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+.ai-plan-desc { font-size: 13px; color: rgba(255,255,255,0.75); }
+
+/* 요약 그리드 */
+.ai-usage-summary {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 16px;
+}
+.ai-summary-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.ai-summary-item {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 12px 8px; background: var(--surface2);
+  border-radius: 12px; gap: 4px;
+}
+.ai-summary-value {
+  font-size: 20px; font-weight: 800; color: var(--accent);
+}
+.ai-summary-label {
+  font-size: 11px; color: var(--text-muted); font-weight: 500;
+}
+
+/* 게이지 */
+.ai-usage-gauge-section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 16px;
+}
+.ai-gauge-card { margin-bottom: 14px; }
+.ai-gauge-card:last-child { margin-bottom: 0; }
+.ai-gauge-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.ai-gauge-label { font-size: 13px; font-weight: 600; color: var(--text); }
+.ai-gauge-count { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+.ai-gauge-bar {
+  width: 100%; height: 8px; background: var(--surface3);
+  border-radius: 4px; overflow: hidden;
+}
+.ai-gauge-fill {
+  height: 100%; background: linear-gradient(90deg, #6c63ff, #a78bfa);
+  border-radius: 4px; transition: width 0.6s ease;
+}
+.ai-gauge-fill.token {
+  background: linear-gradient(90deg, #4ade80, #22d3ee);
+}
+
+/* 모델별 */
+.ai-model-section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 16px;
+}
+.ai-model-list { display: flex; flex-direction: column; gap: 10px; }
+.ai-model-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px; background: var(--surface2);
+  border-radius: 12px; border: 1px solid var(--border);
+}
+.ai-model-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 14px; color: #fff; flex-shrink: 0;
+  background: linear-gradient(135deg, #6c63ff, #4834d4);
+}
+.ai-model-icon.opus { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+.ai-model-icon.haiku { background: linear-gradient(135deg, #4ade80, #059669); }
+.ai-model-info { flex: 1; overflow: hidden; }
+.ai-model-name { display: block; font-size: 13px; font-weight: 600; color: var(--text); }
+.ai-model-meta { display: block; font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.ai-model-stats { text-align: right; flex-shrink: 0; }
+.ai-model-count { display: block; font-size: 14px; font-weight: 700; color: var(--text); }
+.ai-model-cost { display: block; font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+/* 차트 */
+.ai-history-section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 16px;
+}
+.ai-chart { display: flex; flex-direction: column; gap: 8px; }
+.ai-chart-bars {
+  display: flex; align-items: flex-end; gap: 6px; height: 100px;
+}
+.ai-chart-bar {
+  flex: 1; background: linear-gradient(180deg, #6c63ff, #4834d4);
+  border-radius: 4px 4px 0 0; position: relative;
+  min-height: 4px; transition: height 0.4s ease;
+}
+.ai-chart-val {
+  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+  font-size: 10px; font-weight: 600; color: var(--text-secondary);
+  white-space: nowrap;
+}
+.ai-chart-labels {
+  display: flex; gap: 6px;
+}
+.ai-chart-labels span {
+  flex: 1; text-align: center;
+  font-size: 10px; color: var(--text-muted);
+}
+
+/* 요금제 비교 */
+.ai-pricing-section { padding-bottom: 20px; }
+.ai-pricing-grid {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.ai-pricing-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px; position: relative;
+}
+.ai-pricing-card.current { border-color: var(--accent); }
+.ai-pricing-card.recommended { border-color: #fbbf24; }
+.ai-pricing-popular {
+  position: absolute; top: -10px; right: 16px;
+  background: #fbbf24; color: #1a1a2e; font-size: 11px; font-weight: 700;
+  padding: 2px 10px; border-radius: 10px;
+}
+.ai-pricing-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 14px;
+}
+.ai-pricing-name { font-size: 18px; font-weight: 800; color: var(--text); }
+.ai-pricing-price { font-size: 22px; font-weight: 800; color: var(--accent); }
+.ai-pricing-price small { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+.ai-pricing-features {
+  list-style: none; margin-bottom: 16px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.ai-pricing-features li {
+  font-size: 13px; color: var(--text-secondary); padding-left: 18px;
+  position: relative;
+}
+.ai-pricing-features li::before {
+  content: '\2713'; position: absolute; left: 0;
+  color: var(--green); font-weight: 700;
+}
+.ai-pricing-btn {
+  width: 100%; padding: 10px; border-radius: 10px;
+  font-family: inherit; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; border: 1px solid var(--border);
+  background: var(--surface2); color: var(--text);
+}
+.ai-pricing-btn:hover { border-color: var(--accent); color: var(--accent); }
+.ai-pricing-btn.current { background: var(--surface3); color: var(--text-muted); cursor: default; }
+.ai-pricing-btn.upgrade { background: var(--accent); border-color: var(--accent); color: #fff; }
+.ai-pricing-btn.upgrade:hover { opacity: 0.9; }
+
+/* ═══════════════════════════════════════
    고대비 / 접근성
 ═══════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {

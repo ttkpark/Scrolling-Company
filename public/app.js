@@ -58,6 +58,7 @@ const savedPanel = document.getElementById("savedPanel");
 const historyPanel = document.getElementById("historyPanel");
 const appliedPanel = document.getElementById("appliedPanel");
 const profilePanel = document.getElementById("profilePanel");
+const aiUsagePanel = document.getElementById("aiUsagePanel");
 const savedList = document.getElementById("savedList");
 const historyList = document.getElementById("historyList");
 const appliedList = document.getElementById("appliedList");
@@ -1160,7 +1161,7 @@ document.querySelectorAll(".bottom-nav__btn").forEach((btn) => {
     btn.classList.add("active");
     btn.setAttribute("aria-pressed", "true");
 
-    [savedPanel, historyPanel, appliedPanel, profilePanel].forEach((p) => p.classList.remove("active"));
+    [savedPanel, historyPanel, appliedPanel, profilePanel, aiUsagePanel].forEach((p) => p.classList.remove("active"));
 
     state.currentTab = tab;
     if (tab === "saved") savedPanel.classList.add("active");
@@ -1169,6 +1170,9 @@ document.querySelectorAll(".bottom-nav__btn").forEach((btn) => {
     else if (tab === "profile") {
       updateStats();
       profilePanel.classList.add("active");
+    } else if (tab === "aiUsage") {
+      renderAiUsage();
+      aiUsagePanel.classList.add("active");
     }
   });
 });
@@ -1444,6 +1448,99 @@ document.addEventListener("keydown", (e) => {
     if (currentJob) openDetail(currentJob.id);
   }
 });
+
+// ─── AI 사용량 & 요금 ────────────────────────────────────
+function getAiUsageData() {
+  const stored = JSON.parse(localStorage.getItem("aiUsageData") || "null");
+  if (stored) return stored;
+  // 초기 데모 데이터 생성
+  const now = new Date();
+  const daily = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    daily.push({
+      date: d.toISOString().slice(0, 10),
+      label: `${d.getMonth() + 1}/${d.getDate()}`,
+      requests: Math.floor(Math.random() * 40) + 5,
+      tokens: Math.floor(Math.random() * 8000) + 1000,
+    });
+  }
+  const totalReq = daily.reduce((s, d) => s + d.requests, 0);
+  const totalTokens = daily.reduce((s, d) => s + d.tokens, 0);
+  const sonnetReq = Math.floor(totalReq * 0.55);
+  const haikuReq = Math.floor(totalReq * 0.35);
+  const opusReq = totalReq - sonnetReq - haikuReq;
+  const data = {
+    plan: "Free",
+    planName: "무료 체험",
+    totalRequests: totalReq,
+    totalTokens,
+    requestLimit: 1000,
+    tokenLimit: 100000,
+    avgResponseMs: Math.floor(Math.random() * 300) + 150,
+    models: {
+      sonnet: { count: sonnetReq, cost: +(sonnetReq * 0.003).toFixed(2) },
+      opus: { count: opusReq, cost: +(opusReq * 0.015).toFixed(2) },
+      haiku: { count: haikuReq, cost: +(haikuReq * 0.00025).toFixed(2) },
+    },
+    daily,
+  };
+  data.totalCost = +(data.models.sonnet.cost + data.models.opus.cost + data.models.haiku.cost).toFixed(2);
+  localStorage.setItem("aiUsageData", JSON.stringify(data));
+  return data;
+}
+
+function renderAiUsage() {
+  const data = getAiUsageData();
+
+  // 요금제
+  document.getElementById("aiPlanBadge").textContent = data.plan;
+  document.getElementById("aiPlanName").textContent = data.planName;
+
+  // 요약
+  document.getElementById("aiTotalRequests").textContent = data.totalRequests.toLocaleString();
+  document.getElementById("aiTotalTokens").textContent = data.totalTokens >= 1000 ? (data.totalTokens / 1000).toFixed(1) + "K" : data.totalTokens;
+  document.getElementById("aiTotalCost").textContent = "$" + data.totalCost.toFixed(2);
+  document.getElementById("aiAvgResponse").textContent = data.avgResponseMs + "ms";
+
+  // 게이지
+  const reqPct = Math.min(100, (data.totalRequests / data.requestLimit) * 100);
+  const tokenPct = Math.min(100, (data.totalTokens / data.tokenLimit) * 100);
+  document.getElementById("aiReqGauge").style.width = reqPct + "%";
+  document.getElementById("aiReqUsed").textContent = `${data.totalRequests.toLocaleString()} / ${data.requestLimit.toLocaleString()}`;
+  document.getElementById("aiTokenGauge").style.width = tokenPct + "%";
+  document.getElementById("aiTokenUsed").textContent = `${(data.totalTokens / 1000).toFixed(1)}K / ${data.tokenLimit / 1000}K`;
+
+  // 모델별
+  document.getElementById("aiSonnetCount").textContent = data.models.sonnet.count + "회";
+  document.getElementById("aiSonnetCost").textContent = "$" + data.models.sonnet.cost.toFixed(2);
+  document.getElementById("aiOpusCount").textContent = data.models.opus.count + "회";
+  document.getElementById("aiOpusCost").textContent = "$" + data.models.opus.cost.toFixed(2);
+  document.getElementById("aiHaikuCount").textContent = data.models.haiku.count + "회";
+  document.getElementById("aiHaikuCost").textContent = "$" + data.models.haiku.cost.toFixed(2);
+
+  // 차트
+  const maxReq = Math.max(...data.daily.map((d) => d.requests), 1);
+  const barsEl = document.getElementById("aiChartBars");
+  const labelsEl = document.getElementById("aiChartLabels");
+  barsEl.innerHTML = data.daily.map((d) => {
+    const h = Math.max(4, (d.requests / maxReq) * 100);
+    return `<div class="ai-chart-bar" style="height:${h}%" title="${d.date}: ${d.requests}회"><span class="ai-chart-val">${d.requests}</span></div>`;
+  }).join("");
+  labelsEl.innerHTML = data.daily.map((d) => `<span>${d.label}</span>`).join("");
+
+  // 현재 요금제 표시
+  document.querySelectorAll(".ai-pricing-card").forEach((card) => card.classList.remove("current"));
+  document.querySelectorAll(".ai-pricing-btn").forEach((btn) => { btn.disabled = false; btn.classList.remove("current"); btn.textContent = btn.textContent.replace("현재 요금제", "선택"); });
+  const cards = document.querySelectorAll(".ai-pricing-card");
+  const planIdx = data.plan === "Free" ? 0 : data.plan === "Pro" ? 1 : 2;
+  if (cards[planIdx]) {
+    cards[planIdx].classList.add("current");
+    const btn = cards[planIdx].querySelector(".ai-pricing-btn");
+    if (btn) { btn.disabled = true; btn.classList.add("current"); btn.textContent = "현재 요금제"; }
+  }
+}
 
 // ─── 초기 nav badge 업데이트 ─────────────────────────────
 updateNavBadges();

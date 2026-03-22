@@ -336,6 +336,12 @@
         <span>지원</span>
         <span class="nav-badge" id="appliedBadge" style="display:none"></span>
       </button>
+      <button class="bottom-nav__btn" data-tab="aiUsage" aria-label="AI 사용량" aria-pressed="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+        </svg>
+        <span>AI 요금</span>
+      </button>
       <button class="bottom-nav__btn" data-tab="profile" aria-label="내 정보" aria-pressed="false">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -436,6 +442,167 @@
           <button class="profile-action-btn" onclick="resetAllData()">데이터 초기화</button>
           <button class="profile-action-btn primary" onclick="exportData()">내 활동 내보내기</button>
         </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════
+         AI 사용량 & 요금 탭
+    ═══════════════════════════════════════ -->
+    <div class="tab-panel" id="aiUsagePanel" role="region" aria-label="AI 사용량 및 요금">
+      <div class="panel-header">
+        <h2>AI 사용량 & 요금</h2>
+      </div>
+      <div class="ai-usage-content" id="aiUsageContent">
+
+        <!-- 현재 요금제 -->
+        <div class="ai-plan-card">
+          <div class="ai-plan-badge" id="aiPlanBadge">Free</div>
+          <h3 class="ai-plan-name" id="aiPlanName">무료 체험</h3>
+          <p class="ai-plan-desc">기본 AI 기능을 무료로 이용해 보세요</p>
+        </div>
+
+        <!-- 이번 달 사용량 요약 -->
+        <div class="ai-usage-summary">
+          <h3 class="ai-section-title">이번 달 사용 요약</h3>
+          <div class="ai-summary-grid">
+            <div class="ai-summary-item">
+              <span class="ai-summary-value" id="aiTotalRequests">0</span>
+              <span class="ai-summary-label">총 요청 수</span>
+            </div>
+            <div class="ai-summary-item">
+              <span class="ai-summary-value" id="aiTotalTokens">0</span>
+              <span class="ai-summary-label">총 토큰 수</span>
+            </div>
+            <div class="ai-summary-item">
+              <span class="ai-summary-value" id="aiTotalCost">$0.00</span>
+              <span class="ai-summary-label">예상 비용</span>
+            </div>
+            <div class="ai-summary-item">
+              <span class="ai-summary-value" id="aiAvgResponse">0ms</span>
+              <span class="ai-summary-label">평균 응답시간</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 사용량 게이지 -->
+        <div class="ai-usage-gauge-section">
+          <h3 class="ai-section-title">월간 사용 한도</h3>
+          <div class="ai-gauge-card">
+            <div class="ai-gauge-header">
+              <span class="ai-gauge-label">API 요청</span>
+              <span class="ai-gauge-count" id="aiReqUsed">0 / 1,000</span>
+            </div>
+            <div class="ai-gauge-bar">
+              <div class="ai-gauge-fill" id="aiReqGauge" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="ai-gauge-card">
+            <div class="ai-gauge-header">
+              <span class="ai-gauge-label">토큰 사용량</span>
+              <span class="ai-gauge-count" id="aiTokenUsed">0 / 100K</span>
+            </div>
+            <div class="ai-gauge-bar">
+              <div class="ai-gauge-fill token" id="aiTokenGauge" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 모델별 사용량 -->
+        <div class="ai-model-section">
+          <h3 class="ai-section-title">모델별 사용량</h3>
+          <div class="ai-model-list" id="aiModelList">
+            <div class="ai-model-item">
+              <div class="ai-model-icon">S</div>
+              <div class="ai-model-info">
+                <span class="ai-model-name">Claude Sonnet 4.6</span>
+                <span class="ai-model-meta">빠른 응답 · 일반 분석</span>
+              </div>
+              <div class="ai-model-stats">
+                <span class="ai-model-count" id="aiSonnetCount">0회</span>
+                <span class="ai-model-cost" id="aiSonnetCost">$0.00</span>
+              </div>
+            </div>
+            <div class="ai-model-item">
+              <div class="ai-model-icon opus">O</div>
+              <div class="ai-model-info">
+                <span class="ai-model-name">Claude Opus 4.6</span>
+                <span class="ai-model-meta">정밀 분석 · 복잡한 작업</span>
+              </div>
+              <div class="ai-model-stats">
+                <span class="ai-model-count" id="aiOpusCount">0회</span>
+                <span class="ai-model-cost" id="aiOpusCost">$0.00</span>
+              </div>
+            </div>
+            <div class="ai-model-item">
+              <div class="ai-model-icon haiku">H</div>
+              <div class="ai-model-info">
+                <span class="ai-model-name">Claude Haiku 4.5</span>
+                <span class="ai-model-meta">초고속 · 간단한 분류</span>
+              </div>
+              <div class="ai-model-stats">
+                <span class="ai-model-count" id="aiHaikuCount">0회</span>
+                <span class="ai-model-cost" id="aiHaikuCost">$0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 일별 사용 기록 -->
+        <div class="ai-history-section">
+          <h3 class="ai-section-title">최근 7일 사용량</h3>
+          <div class="ai-chart" id="aiChart">
+            <div class="ai-chart-bars" id="aiChartBars"></div>
+            <div class="ai-chart-labels" id="aiChartLabels"></div>
+          </div>
+        </div>
+
+        <!-- 요금제 비교 -->
+        <div class="ai-pricing-section">
+          <h3 class="ai-section-title">요금제</h3>
+          <div class="ai-pricing-grid">
+            <div class="ai-pricing-card current">
+              <div class="ai-pricing-header">
+                <span class="ai-pricing-name">Free</span>
+                <span class="ai-pricing-price">무료</span>
+              </div>
+              <ul class="ai-pricing-features">
+                <li>월 1,000회 요청</li>
+                <li>100K 토큰</li>
+                <li>Haiku / Sonnet</li>
+                <li>기본 분석</li>
+              </ul>
+              <button class="ai-pricing-btn current" disabled>현재 요금제</button>
+            </div>
+            <div class="ai-pricing-card recommended">
+              <div class="ai-pricing-popular">추천</div>
+              <div class="ai-pricing-header">
+                <span class="ai-pricing-name">Pro</span>
+                <span class="ai-pricing-price">$29<small>/월</small></span>
+              </div>
+              <ul class="ai-pricing-features">
+                <li>월 10,000회 요청</li>
+                <li>1M 토큰</li>
+                <li>모든 모델 사용</li>
+                <li>고급 분석 + 우선 응답</li>
+              </ul>
+              <button class="ai-pricing-btn upgrade" onclick="showToast('Pro 요금제 업그레이드 준비 중입니다!')">업그레이드</button>
+            </div>
+            <div class="ai-pricing-card">
+              <div class="ai-pricing-header">
+                <span class="ai-pricing-name">Enterprise</span>
+                <span class="ai-pricing-price">문의</span>
+              </div>
+              <ul class="ai-pricing-features">
+                <li>무제한 요청</li>
+                <li>무제한 토큰</li>
+                <li>전용 인프라</li>
+                <li>SLA 보장 + 전담 지원</li>
+              </ul>
+              <button class="ai-pricing-btn" onclick="showToast('Enterprise 문의는 contact@jobscroll.kr로 연락해 주세요.')">문의하기</button>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
